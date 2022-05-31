@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "nombre": "Daniel Ojeda",
+    "departamento": "Datamining",
+    "email": "daniel@gmail.com",
+    "ubicacion": "Madrid"
+  },
+  {
+    "id": 2,
+    "nombre": "Alvaro Ojeda",
+    "departamento": "I+D",
+    "email": "alvarojeda@gmail.com",
+    "ubicacion": "Sevilla"
+  },
+  {
+    "id": 3,
+    "nombre": "Carolina Ojeda",
+    "departamento": "IA",
+    "email": "carolinariquelme@gmail.com",
+    "ubicacion": "Barcelona"
+  }
+]
