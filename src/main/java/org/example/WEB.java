@@ -36,16 +36,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 @PWA(name = "App", shortName = "App")
 public class WEB extends VerticalLayout {
 
-    private static final String API = "http://localhost:9090/%s";
+    //private static final String API = "http://localhost:9090/%s";
     //private static final String API = "https://P3_DIS.herokuapp.com/%s";
-
+    private static final String API = "http://api:9090/%s";
     HttpRequest request;
     HttpClient cliente = HttpClient.newBuilder().build();
     HttpResponse<String> response;
 
-    private void ActualizarId(){
-        String resource = String.format(API, "actualizarid");
+    private void IniciamosUsers(){
+        String resource = String.format(API, "iniciarid");
         System.out.println(resource);
+
 
         try{
             request = HttpRequest.newBuilder(new URI(resource)).GET().build();
@@ -227,7 +228,7 @@ public class WEB extends VerticalLayout {
 /////////////////////////////////////////////////////////
     public WEB(){
 
-        ActualizarId();
+        IniciamosUsers();
         /////////////////////////////USUARIOS//////////////////////////////////
         //Recibir los usuarios
         String usersST = Getusers();
