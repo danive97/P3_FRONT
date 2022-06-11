@@ -37,8 +37,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class WEB extends VerticalLayout {
 
     //private static final String API = "http://localhost:9090/%s";
-    //private static final String API = "https://P3_DIS.herokuapp.com/%s";
-    private static final String API = "http://api:9090/%s";
+    private static final String API = "https://cryptic-badlands-81418.herokuapp.com/%s";
+    //private static final String API = "http://api:9090/%s";
     HttpRequest request;
     HttpClient cliente = HttpClient.newBuilder().build();
     HttpResponse<String> response;
