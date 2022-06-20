@@ -15,10 +15,12 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.html.Image;
 
 import org.example.APIREST.Equipo;
 import org.example.APIREST.Prestamo;
 import org.example.APIREST.User;
+import com.vaadin.flow.server.StreamResource;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -35,14 +37,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Route
 @PWA(name = "App", shortName = "App")
 public class WEB extends VerticalLayout {
-
+    //Defino este private static API para cuando el front leía desde el localhost
     //private static final String API = "http://localhost:9090/%s";
-    //private static final String API = "https://p3backdis.herokuapp.com/%s";
-    private static final String API = "http://api:9090/%s";
+
+    //Defino este private static API para cuando el front lea desde el heroku
+    private static final String API = "https://disback3.herokuapp.com/%s";
+
+    //Defino este privado static API para cuando leía el contenedor API
+    //private static final String API = "http://api:9090/%s";
+
+    //Defino esta request para cuando quiero pedirle algo a la API
     HttpRequest request;
     HttpClient cliente = HttpClient.newBuilder().build();
     HttpResponse<String> response;
 
+    //Primer método, en el que inicio los users, puesto que es la primera pestaña que se ve
+    //voy pasando los usuarios, según el ID.
     private void IniciamosUsers(){
         String resource = String.format(API, "iniciarid");
         System.out.println(resource);
@@ -67,7 +77,7 @@ public class WEB extends VerticalLayout {
         return;
 
     }
-
+    //Aquí, vuelvo a llamar a mi metodo GetUsers, para obtener los users
     private String Getusers(){
         String resource = String.format(API, "Getusers");
         System.out.println(resource);
@@ -127,6 +137,7 @@ public class WEB extends VerticalLayout {
         String string = gson.toJson(userEditado, User.class);
 
         String resource = String.format(API, "editarUser");
+        System.out.println(resource);
         System.out.println("User editado en el gson: \n"+string);
 
         try{
@@ -225,13 +236,15 @@ public class WEB extends VerticalLayout {
         return response.body();
 
     }
+
 /////////////////////////////////////////////////////////
     public WEB(){
-
-        IniciamosUsers();
+    //Al iniciar el método  WEB, vamos a ir creando la interfaz de la app.
+        IniciamosUsers(); //Primero creamos los usuarios
         /////////////////////////////USUARIOS//////////////////////////////////
         //Recibir los usuarios
         String usersST = Getusers();
+        //Pasamos un objeto gson para crear un arraylist de usuarios
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         ArrayList<User> users;
         Type ListaUsersType = new TypeToken<ArrayList<User>>(){}.getType();
@@ -264,7 +277,6 @@ public class WEB extends VerticalLayout {
         Button acep_2 = new Button("Aceptar_2");
         Button nuevo = new Button("Nuevo User");
         Button edit = new Button("Editar User");
-        Button borrar = new Button("Borrar User");
 
         //Definicion del diseño de los layout y divs
         usersHLayout.add(nombre, departamento, telefono, email, ubicacion);
@@ -288,7 +300,6 @@ public class WEB extends VerticalLayout {
             usersVLayout.remove(anadir);
             usersVLayout.remove(acep_2);
             usersVLayout.add(edit);
-            usersVLayout.remove(borrar);
         });
 
         nuevo.addClickListener(e->{
@@ -300,7 +311,6 @@ public class WEB extends VerticalLayout {
             ubicacion.clear();
             usersVLayout.remove(edit);
             usersVLayout.remove(acep_2);
-            usersVLayout.remove(borrar);
             usersVLayout.add(anadir);
 
         });
@@ -315,9 +325,6 @@ public class WEB extends VerticalLayout {
            UI.getCurrent().getPage().reload();
         });
 
-        borrar.addClickListener(e->{
-           usersDIV.remove(usersVLayout);
-        });
 
         anadir.addClickListener(e->{
             usersDIV.remove(usersVLayout);
@@ -331,19 +338,19 @@ public class WEB extends VerticalLayout {
            usersDIV.remove(usersVLayout);
         });
         /////////////////////////////PRESTAMOS//////////////////////////////////
-        //Recibir los usuarios
+        //Recibir los prestamos
         String presST = Getprest();
         Gson gson1 = new GsonBuilder().setPrettyPrinting().create();
         ArrayList<Prestamo> prestamos;
         Type prestType = new TypeToken<ArrayList<Prestamo>>(){}.getType();
         prestamos = gson.fromJson(presST, prestType);
 
-        //Tabla de los usuarios
+        //Tabla de los prestamos
         Tab prestTAB = new Tab("Prestamos");
         Div prestDIV = new Div();
         prestDIV.setVisible(false);
 
-        //Definicion del grid de users
+        //Definicion del grid de prestamos
         Grid<Prestamo> gridPrest = new Grid<>(Prestamo.class);
         gridPrest.setItems(prestamos);
         gridPrest.removeColumnByKey("id");
@@ -424,19 +431,19 @@ public class WEB extends VerticalLayout {
             prestDIV.remove(prestVLayout);
         });
         /////////////////////////////EQUIPOS//////////////////////////////////
-        //Recibir los usuarios
+        //Recibir los equipos
         String equiST = Getequipo();
         Gson gson2 = new GsonBuilder().setPrettyPrinting().create();
         ArrayList<Equipo> equipos;
         Type equiType = new TypeToken<ArrayList<Equipo>>(){}.getType();
         equipos = gson.fromJson(equiST, equiType);
 
-        //Tabla de los usuarios
+        //Tabla de los equipos
         Tab equiTAB = new Tab("Equipos");
         Div equiDIV = new Div();
         equiDIV.setVisible(false); /////IMPORTANTE
 
-        //Definicion del grid de users
+        //Definicion del grid de equipos
         Grid<Equipo> gridEqui = new Grid<>(Equipo.class);
         gridEqui.setItems(equipos);
         gridEqui.removeColumnByKey("id_equipo");
@@ -494,15 +501,23 @@ public class WEB extends VerticalLayout {
 
    ////////////////////////////////////////////////////////////////
         Map<Tab, Component> tabsToPages = new HashMap<>();
-        tabsToPages.put(usersTAB, usersDIV);
-        tabsToPages.put(prestTAB, prestDIV);
-        tabsToPages.put(equiTAB, equiDIV);
-        Tabs tabs = new Tabs(usersTAB, prestTAB, equiTAB);
+        tabsToPages.put(usersTAB, usersDIV); //Definimos la pestaña de los users
+        tabsToPages.put(prestTAB, prestDIV); //Definimos la pestaña de los prestamos
+        tabsToPages.put(equiTAB, equiDIV); //Definimos la pestaña de los equipos
+
+        //Hemos colocado un logo de la UFV, para darle un poco más de colorido
+	  StreamResource imageResource = new StreamResource("ufv.png",
+                () -> getClass().getResourceAsStream("/ufv.png"));
+
+        Image image = new Image(imageResource, "My Streamed Image");
+        add(image);
+	    //Definimos el orden de las pestañas
+        Tabs tabs = new Tabs(usersTAB, equiTAB, prestTAB);
         tabs.setSizeFull();
-        Div pages = new Div(usersDIV, prestDIV, equiDIV);
+        Div pages = new Div(usersDIV, equiDIV, prestDIV);
         pages.setSizeFull();
 
-
+        //Cuando vamos haciendo click en la correspondiente pestaña, el resto se van "ocultando"
         tabs.addSelectedChangeListener(event ->{
            tabsToPages.values().forEach(page -> page.setVisible(false));
            Component paginaSeleccionada = tabsToPages.get(tabs.getSelectedTab());
