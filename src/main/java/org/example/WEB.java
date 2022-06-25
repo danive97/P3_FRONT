@@ -3,8 +3,10 @@ package org.example;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
@@ -526,5 +528,18 @@ public class WEB extends VerticalLayout {
 
         add(tabs, pages);
 
+        Accordion accordion = new Accordion();
+
+        Span nombre_aco = new Span("Daniel Ojeda Velasco");
+        Span correo_aco = new Span("daniel.ojeda@telefonica.net");
+        Span ciudad_aco = new Span("Madrid");
+
+        VerticalLayout personalInformationLayout = new VerticalLayout(nombre_aco, correo_aco, ciudad_aco);
+        personalInformationLayout.setSpacing(false);
+        personalInformationLayout.setPadding(false);
+
+        accordion.add("Información Personal", personalInformationLayout);
+
+        add(accordion);
     }
 }
